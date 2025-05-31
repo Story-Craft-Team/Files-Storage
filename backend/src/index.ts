@@ -2,7 +2,7 @@ import PostgresConnector from "@modules/postgresConnector";
 import { config as dotenv } from "dotenv";
 import fastify, { FastifyInstance } from "fastify";
 import path from "path";
-import web from "web";
+import web from "./web";
 
 dotenv({ path: ".env" });
 
