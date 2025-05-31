@@ -117,7 +117,9 @@ async function putFileApi(depends: IDepends, req: FastifyRequest, res: FastifyRe
 		}
 		let body = req.body as any;
 		if (body == null) return { status: EResponseStatus.ERROR, code: EClientErrorCodes.NULL, message: "Body is empty" };
-		var apikey = (headers?.authorization || urlParams.get("secret") || body?.secret?.value || undefined) as string | undefined;
+
+		let bearer = headers?.authorization ? (headers.authorization.split(" ").length === 2 ? headers.authorization.split(" ")[1] : headers.authorization) : undefined;
+        var apikey = (bearer || urlParams.get("secret") || body?.secret?.value || undefined) as string | undefined;
 
 		if (!apikey) {
 			return { status: EResponseStatus.ERROR, code: EClientErrorCodes.UNAUTHORIZED, message: "Unauthorized" };
@@ -172,7 +174,7 @@ async function putFileApi(depends: IDepends, req: FastifyRequest, res: FastifyRe
 		const fileData: IFileData = {
 			uuid: uuid,
 			bucket: bucket,
-			url: `${bucket ? "/" + bucket : "/"}${uuid}/`,
+			url: `/${bucket ? bucket + "/" : ""}${uuid}.${ext.trim()}`,
 			file_mimetype: mimetype,
 			file_ext: ext.trim(),
 			file_name: filename.trim(),
