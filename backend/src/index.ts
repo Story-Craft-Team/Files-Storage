@@ -3,6 +3,7 @@ import { config as dotenv } from "dotenv";
 import fastify, { FastifyInstance } from "fastify";
 import path from "path";
 import web from "./web";
+import api from "./web/api";
 
 dotenv({ path: ".env" });
 
@@ -36,7 +37,8 @@ export class IMC {
 		this.fastify = fastify({ logger: false });
         await this.dbConnect();
 
-        web(this)
+        api(this)
+        web(this);
 	}
 
 	private async dbConnect() {
