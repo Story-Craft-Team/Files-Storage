@@ -1,0 +1,9 @@
+{
+	"scripts": {
+		"start": "docker-compose up -d",
+		"stop": "docker-compose down",
+		"restart": "docker-compose restart",
+		"build": "docker-compose build",
+        "status": "docker ps -f name=files_storage_db --format \"table {{.Names}}\\t{{.Status}}\\t{{.Ports}}\""
+	}
+}

@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS files (
+    uuid UUID PRIMARY KEY,
+    bucket VARCHAR(255),
+    url VARCHAR(255) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_mimetype VARCHAR(100) NOT NULL,
+    file_ext VARCHAR(20) NOT NULL,
+    file_size INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
