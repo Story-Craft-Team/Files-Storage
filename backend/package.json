@@ -22,6 +22,7 @@
 	},
 	"contributors": [],
 	"scripts": {
+        "firsttime": "npm install && npm i -g vite",
 		"start": "npm run copyfiles && node dist/index.js",
 		"watch": "vite build --watch",
 		"build": "npm run copyfiles && vite build",
