@@ -117,10 +117,7 @@ async function putFileApi(depends: IDepends, req: FastifyRequest, res: FastifyRe
 		}
 		let body = req.body as any;
 		if (body == null) return { status: EResponseStatus.ERROR, code: EClientErrorCodes.NULL, message: "Body is empty" };
-		var apikey = ((headers?.authorization ? (headers.authorization.split(" ").length === 2 ? headers.authorization.split(" ")[1] : headers.authorization) : undefined) ||
-			urlParams.get("secret") ||
-			body?.secret?.value ||
-			undefined) as string | undefined;
+		var apikey = (headers?.authorization || urlParams.get("secret") || body?.secret?.value || undefined) as string | undefined;
 
 		if (!apikey) {
 			return { status: EResponseStatus.ERROR, code: EClientErrorCodes.UNAUTHORIZED, message: "Unauthorized" };
