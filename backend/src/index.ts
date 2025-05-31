@@ -14,6 +14,8 @@ dotenv({ path: ".env" });
 
 const PORT = Number(process.env.PORT);
 if (!PORT) throw new Error("PORT incorrect in .env");
+const API_KEY: string = process.env.API_KEY || "";
+if (!API_KEY) throw new Error("API_KEY incorrect in .env");
 
 async function postgresConnect() {
 	return new PostgresConnector({
@@ -98,9 +100,10 @@ interface IFileData {
 async function putFileApi(depends: IDepends, req: FastifyRequest, res: FastifyReply): Promise<IHTTPResponse<IFileData>> {
 	try {
 		const urlParams = new URLSearchParams((req.query || {}) as any);
+		const headers = (req.headers || {}) as any;
 
-		const ContentType = req.headers["content-type"];
-		const ContentLength = req.headers["content-length"];
+		const ContentType = headers["content-type"];
+		const ContentLength = headers["content-length"];
 
 		if (!ContentType || ContentLength == "0") {
 			return { status: EResponseStatus.ERROR, code: EClientErrorCodes.NULL, message: "Content is empty" };
@@ -114,6 +117,18 @@ async function putFileApi(depends: IDepends, req: FastifyRequest, res: FastifyRe
 		}
 		let body = req.body as any;
 		if (body == null) return { status: EResponseStatus.ERROR, code: EClientErrorCodes.NULL, message: "Body is empty" };
+		var apikey = ((headers?.authorization ? (headers.authorization.split(" ").length === 2 ? headers.authorization.split(" ")[1] : headers.authorization) : undefined) ||
+			urlParams.get("secret") ||
+			body?.secret?.value ||
+			undefined) as string | undefined;
+
+		if (!apikey) {
+			return { status: EResponseStatus.ERROR, code: EClientErrorCodes.UNAUTHORIZED, message: "Unauthorized" };
+		}
+		if (apikey !== API_KEY) {
+			return { status: EResponseStatus.ERROR, code: EClientErrorCodes.FORBIDDEN, message: "Forbidden" };
+		}
+
 		var file = (body["file"] || body["files"]) as any;
 		if (file == null) return { status: EResponseStatus.ERROR, code: EClientErrorCodes.NULL, message: "'file' or 'files' field is empty" };
 
